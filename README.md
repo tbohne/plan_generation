@@ -1,2 +1,7 @@
-# plan_generation
-Node that generates and provides plans based on geojson data.
+# Plan Generation Node
+
+**Simple node that generates and provides handcrafted plans as service based on geojson data.**
+
+## Usage
+
+`rosrun plan_generation plan_generator.py`
