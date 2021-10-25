@@ -9,164 +9,20 @@ class PlanGenerator():
         self.generate_plan()
 
     def generate_plan(self):
-        self.generated_plan = plan() 
+        self.generated_plan = plan()
         self.generated_plan.actions = []
 
-        #########################################################################
-        ############################## CUSTOM PLAN ##############################
-        #########################################################################
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.32043739026998)
-        a.flt_args.append(8.153532860027937)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320634371203766)
-        a.flt_args.append(8.153602612483242)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320556806473469)
-        a.flt_args.append(8.153450831140496)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320530579550272)
-        a.flt_args.append(8.153441902826218)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        ###################################################
-        a = action()
-        a.name = "drive_to_container"
-        a.task = "charge"
-        self.generated_plan.actions.append(a)
-
-        # after recharge - back to point 3
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320556806473469)
-        a.flt_args.append(8.153450831140496)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-        ###################################################
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.32045524689854)
-        a.flt_args.append(8.153333088995939)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320461943134248)
-        a.flt_args.append(8.153286773365616)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320559038552034)
-        a.flt_args.append(8.15322371714602)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        ###################################################
-        a = action()
-        a.name = "drive_to_container"
-        a.task = "charge"
-        self.generated_plan.actions.append(a)
-
-        # after recharge - back to point 3
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320556806473469)
-        a.flt_args.append(8.153450831140496)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-        ###################################################
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320487612037802)
-        a.flt_args.append(8.15310764906039)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320696869403719)
-        a.flt_args.append(8.153179075574624)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320591403691296)
-        a.flt_args.append(8.153232087440657)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320668193394333)
-        a.flt_args.append(8.153359501925676)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-
-        a = action()
-        a.name = "drive_to"
-        a.str_args.append("wgs84")
-        a.flt_args.append(52.320663946244821)
-        a.flt_args.append(8.153400609372676)
-        a.flt_args.append(0)
-        a.task = "null"
-        self.generated_plan.actions.append(a)
-    
-        ###################################################
-        a = action()
-        a.name = "drive_to_container"
-        a.task = "charge"
-        self.generated_plan.actions.append(a)
-        ###################################################
-
-        #########################################################################
-        #########################################################################
-        #########################################################################
+        with open(rospy.get_param('/plan'), 'r') as file:
+            plan_actions = file.readlines()
+        
+        if plan_actions:
+            for pa in plan_actions:                
+                a = action()
+                a.name, lat, lng, orientation, a.task = pa.strip().split(",")
+                if a.name == "drive_to":
+                    a.str_args.append("wgs84")
+                    a.flt_args = [float(lat), float(lng), float(orientation)]
+                self.generated_plan.actions.append(a)        
 
     def retrieve_plan(self, req):
         res = get_planResponse()
