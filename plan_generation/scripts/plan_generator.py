@@ -12,25 +12,22 @@ class PlanGenerator():
         self.generated_plan = plan()
         self.generated_plan.actions = []
 
-        with open(rospy.get_param('/plan'), 'r') as file:
+        with open(rospy.get_param('/plan_path'), 'r') as file:
             plan_actions = file.readlines()
         
         if plan_actions:
             for pa in plan_actions:                
                 a = action()
-                a.name, lat, lng, orientation, a.task = pa.strip().split(",")
+                action_params = pa.strip().split(",")
+                a.name = action_params[0]
                 if a.name == "drive_to":
-                    a.str_args.append("wgs84")
-                    a.flt_args = [float(lat), float(lng), float(orientation)]
-                self.generated_plan.actions.append(a)        
+                    a.pose = [float(i) for i in action_params[1:]]
+                self.generated_plan.actions.append(a)
 
     def retrieve_plan(self, req):
         res = get_planResponse()
         res.generated_plan = self.generated_plan
-        if len(self.generated_plan.actions) == 0:
-            res.succeeded = False
-        else: 
-            res.succeeded = True
+        res.succeeded = len(self.generated_plan.actions) > 0
         return res
 
 def node():

@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 
 <launch>
-    <param name="plan" type="str" value="$(find plan_generation)/../plan.csv" />
+    <param name="plan_path" type="str" value="$(find plan_generation)/../plan.csv" />
     <node pkg="plan_generation" type="plan_generator.py" name="plan_generator" respawn="true" output="screen" />
 </launch>
