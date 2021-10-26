@@ -24,5 +24,5 @@ There are four available actions and each line in the .csv file represents one a
 
 ## Usage
 
-- The csv-plan to be used can be configured via the parameter `plan_path` in the launch file.  
+- the csv-plan to be used can be configured via the parameter `plan_path` in the launch file
 - launch plan generator / provider: `roslaunch plan_generation plan_generation.launch`
