@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import rospy
+from std_msgs.msg import String
 from plan_generation.srv import get_plan, get_planResponse
 from plan_generation.msg import plan, action
 
@@ -32,6 +33,7 @@ class PlanGenerator():
 
 def node():
     rospy.init_node('plan_generator')
+    rospy.wait_for_message('SMACH_runnning', String)
     plan_generator = PlanGenerator()
 
     rospy.loginfo("setting handcrafted plan..")
