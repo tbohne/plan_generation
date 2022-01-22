@@ -12,6 +12,7 @@ class PlanGenerator():
     def generate_plan(self):
         self.generated_plan = plan()
         self.generated_plan.actions = []
+        plan_actions = None
 
         try:
             with open(rospy.get_param('/plan_path'), 'r') as file:
