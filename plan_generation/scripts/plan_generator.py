@@ -13,11 +13,14 @@ class PlanGenerator():
         self.generated_plan = plan()
         self.generated_plan.actions = []
 
-        with open(rospy.get_param('/plan_path'), 'r') as file:
-            plan_actions = file.readlines()
+        try:
+            with open(rospy.get_param('/plan_path'), 'r') as file:
+                plan_actions = file.readlines()
+        except IOError as e:
+            rospy.loginfo("IO error: %s", e)
         
         if plan_actions:
-            for pa in plan_actions:                
+            for pa in plan_actions:
                 a = action()
                 action_params = pa.strip().split(",")
                 a.name = action_params[0]
