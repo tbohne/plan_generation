@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from datetime import datetime
 import rospy
+import copy
 from std_msgs.msg import String
 from plan_generation.srv import get_plan, get_planResponse
 from plan_generation.msg import plan, action
@@ -62,9 +63,10 @@ class PlanGenerator():
 
     def retrieve_plan(self, req):
         global IDLE_TIME
+        rospy.loginfo("plan retrieval initiated..")
 
         res = get_planResponse()
-        res.generated_plan = self.generated_plan
+        res.generated_plan = copy.deepcopy(self.generated_plan)
         res.succeeded = len(self.generated_plan.actions) > 0
         if self.sim_empty_plan:
             rospy.loginfo("simulating empty plan..")
