@@ -14,6 +14,7 @@ class PlanGenerator():
         self.generate_plan()
         self.plan_service = None
 
+        rospy.Subscriber('/activate_plan_service', String, self.activate_service_callback, queue_size=1)
         rospy.Subscriber('/sim_extended_idle_time', String, self.sim_idle_time_callback, queue_size=1)
         rospy.Subscriber('/toggle_unavailable_plan_service', String, self.toggle_unavailable_service_callback, queue_size=1)
         rospy.Subscriber('/sim_empty_plan', String, self.sim_empty_plan_callback, queue_size=1)
@@ -23,6 +24,10 @@ class PlanGenerator():
         self.sim_infeasible_plan = False
         self.service_available = True
         self.start_idle_time = None
+
+    def activate_service_callback(self, msg):
+        rospy.loginfo("plan generator msg: %s", msg.data)
+        self.provide_service()
 
     def sim_idle_time_callback(self, msg):
         self.sim_extended_idle_time = True
