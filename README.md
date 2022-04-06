@@ -10,16 +10,15 @@ Four actions are available in the scenario, and each line in the .csv file repre
 - `charge`
 - `scan`
 
------
-*<u>Sample Plan:</u>*  
-`drive_to,52.32043739026998,8.153532860027937,0`  
-`scan`  
-`drive_to,52.320634371203766,8.153602612483242,0`  
-`scan`  
-`return_to_base`  
-`charge`  
-
------
+## Sample Plan:
+```
+drive_to,52.32043739026998,8.153532860027937,0
+scan
+drive_to,52.320634371203766,8.153602612483242,0
+scan
+return_to_base
+charge
+```
 
 ## Run Node with Default Plan (`plan.csv`)
 
