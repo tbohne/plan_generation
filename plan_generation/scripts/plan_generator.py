@@ -8,45 +8,83 @@ from plan_generation.msg import plan, action
 
 IDLE_TIME = 60
 
-class PlanGenerator():
+
+class PlanGenerator:
+    """
+    Parses and provides handcrafted plans as service based on csv data.
+    """
 
     def __init__(self):
         self.generate_plan()
         self.plan_service = None
-
-        rospy.Subscriber('/activate_plan_service', String, self.activate_service_callback, queue_size=1)
-        rospy.Subscriber('/sim_extended_idle_time', String, self.sim_idle_time_callback, queue_size=1)
-        rospy.Subscriber('/toggle_unavailable_plan_service', String, self.toggle_unavailable_service_callback, queue_size=1)
-        rospy.Subscriber('/sim_empty_plan', String, self.sim_empty_plan_callback, queue_size=1)
-        rospy.Subscriber('/sim_infeasible_plan', String, self.sim_infeasible_plan_callback, queue_size=1)
         self.sim_extended_idle_time = False
         self.sim_empty_plan = False
         self.sim_infeasible_plan = False
         self.service_available = True
         self.start_idle_time = None
+        self.generated_plan = None
+
+        rospy.Subscriber('/activate_plan_service', String, self.activate_service_callback, queue_size=1)
+        rospy.Subscriber('/sim_extended_idle_time', String, self.sim_idle_time_callback, queue_size=1)
+        rospy.Subscriber('/toggle_unavailable_plan_service', String, self.toggle_unavailable_service_callback,
+                         queue_size=1)
+        rospy.Subscriber('/sim_empty_plan', String, self.sim_empty_plan_callback, queue_size=1)
+        rospy.Subscriber('/sim_infeasible_plan', String, self.sim_infeasible_plan_callback, queue_size=1)
 
     def activate_service_callback(self, msg):
-        rospy.loginfo("plan generator msg: %s", msg.data)
+        """
+        Callback that allows external activation of the plan provision service.
+
+        :param msg: callback message
+        """
+        rospy.loginfo("activate service: %s", msg.data)
         self.provide_service()
 
     def sim_idle_time_callback(self, msg):
+        """
+        Initiates simulation of an extended idle time.
+
+        :param msg: callback message
+        """
+        rospy.loginfo("sim idle time: %s", msg.data)
         self.sim_extended_idle_time = True
 
     def sim_empty_plan_callback(self, msg):
+        """
+        Initiates simulation of an empty plan provision.
+
+        :param msg: callback message
+        """
+        rospy.loginfo("sim empty plan: %s", msg.data)
         self.sim_empty_plan = True
 
     def sim_infeasible_plan_callback(self, msg):
+        """
+        Initiates simulation of an infeasible plan provision.
+
+        :param msg: callback message
+        """
+        rospy.loginfo("sim infeasible plan: %s", msg.data)
         self.sim_infeasible_plan = True
 
     def toggle_unavailable_service_callback(self, msg):
+        """
+        Toggles (activates / deactivates) plan service availability.
+
+        :param msg: callback message
+        """
+        rospy.loginfo("toggle plan service availability: %s", msg.data)
         if self.service_available:
-            if self.plan_service is not None:
+            if self.plan_service:
                 self.plan_service.shutdown()
         else:
             self.provide_service()
         self.service_available = not self.service_available
 
     def generate_plan(self):
+        """
+        Generates a plan based on the configured csv file.
+        """
         self.generated_plan = plan()
         self.generated_plan.actions = []
         plan_actions = None
@@ -56,7 +94,7 @@ class PlanGenerator():
                 plan_actions = file.readlines()
         except IOError as e:
             rospy.loginfo("IO error: %s", e)
-        
+
         if plan_actions:
             for pa in plan_actions:
                 a = action()
@@ -67,6 +105,12 @@ class PlanGenerator():
                 self.generated_plan.actions.append(a)
 
     def retrieve_plan(self, req):
+        """
+        Plan retrieval -- creates a response for a plan request.
+
+        :param req: request message
+        :return: response containing the generated plan
+        """
         global IDLE_TIME
         rospy.loginfo("plan retrieval initiated..")
 
@@ -88,29 +132,32 @@ class PlanGenerator():
             self.sim_extended_idle_time = False
             res.succeeded = False
 
-        if self.start_idle_time is not None:
-            if (datetime.now()  - self.start_idle_time).total_seconds() < IDLE_TIME:
+        if self.start_idle_time:
+            if (datetime.now() - self.start_idle_time).total_seconds() < IDLE_TIME:
                 res.succeeded = False
             else:
                 self.start_idle_time = None
-
         return res
 
     def provide_service(self):
+        """
+        Provides plan retrieval as a service.
+        """
         rospy.loginfo("providing plan generation service..")
         self.plan_service = rospy.Service('arox_planner/get_plan', get_plan, self.retrieve_plan)
 
-def node():
-    rospy.init_node('plan_generator')
-    #rospy.wait_for_message('SMACH_runnning', String)
-    plan_generator = PlanGenerator()
 
+def node():
+    """
+    Simple node that parses and provides handcrafted plans as service based on csv data.
+    """
+    rospy.init_node('plan_generator')
+    plan_generator = PlanGenerator()
     rospy.loginfo("setting handcrafted plan..")
     plan_generator.generate_plan()
-
     plan_generator.provide_service()
-
     rospy.spin()
+
 
 if __name__ == '__main__':
     try:
