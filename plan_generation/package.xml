@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>plan_generation</name>
-  <version>0.0.0</version>
+  <version>1.0.0</version>
   <description>Node that generates and provides plans based on geojson data.</description>
 
   <maintainer email="tbohne@uni-osnabrueck.de">Tim Bohne</maintainer>
