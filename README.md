@@ -1,6 +1,6 @@
 # Plan Generation Node
 
-**Simple ROS node that parses and provides handcrafted plans as a service based on CSV data. Used in the context of my [**master's thesis**](https://github.com/tbohne/msc).**
+**Simple ROS node that parses and provides handcrafted action plans as a service based on CSV data. Used in the context of my [**master's thesis**](https://github.com/tbohne/msc).**
 
 ## Plan Format (CSV)
 
