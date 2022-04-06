@@ -35,5 +35,5 @@ $ roslaunch plan_generation plan_generation.launch plan_path:=PATH_TO_PLAN
 ## Plan Retrieval Service
 
 ```
-$ rosservice call /arox_planner/get_plan
+$ rosservice call /plan_generation/get_plan
 ```

@@ -144,7 +144,7 @@ class PlanGenerator:
         Provides plan retrieval as a service.
         """
         rospy.loginfo("providing plan generation service..")
-        self.plan_service = rospy.Service('arox_planner/get_plan', get_plan, self.retrieve_plan)
+        self.plan_service = rospy.Service('plan_generation/get_plan', get_plan, self.retrieve_plan)
 
 
 def node():
